@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import urllib.request,sys,time,os
 import requests
-
+import json
 
 list_of_urls = """https://www.ertnews.gr/
 https://www.stratologia.gr/
@@ -25,8 +25,8 @@ https://www.topontiki.gr/
 https://www.agon.gr/
 https://neoiagones.gr/""".split("\n")
 
-
-data = "data_"+str(time.time())
+ts = time.time()
+data = "data_"+str(ts)
 os.mkdir(data)
 
 for URL in list_of_urls:
@@ -66,8 +66,11 @@ for URL in list_of_urls:
   
     with open(data+"/" + URL.split("//")[-1].split("/")[0],"w") as f:
         for i in news_dict.items():
-            f.write(" , ".join(i)+"\n")
-
+            json_obj = {"id":i[0], "title":i[1], "time": ts }
+            #f.write(" , ".join(i)+"\n")
+            f.write(json.dumps(json_obj) +" \n")
+            
+            
 
 
 
