@@ -2,6 +2,16 @@ from bs4 import BeautifulSoup
 import urllib.request,sys,time,os
 import requests
 import json
+import pymongo
+
+
+
+#Creating the database
+
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+
+mydb = myclient["news_db"]
+mycol = mydb["articles"]
 
 list_of_urls = """https://www.ertnews.gr/
 https://www.stratologia.gr/
@@ -66,10 +76,10 @@ for URL in list_of_urls:
   
     with open(data+"/" + URL.split("//")[-1].split("/")[0],"w") as f:
         for i in news_dict.items():
-            json_obj = {"id":i[0], "title":i[1], "time": ts }
-            #f.write(" , ".join(i)+"\n")
-            f.write(json.dumps(json_obj) +" \n")
-            
+            json_obj = {"url":i[0], "title":i[1], "time": ts }
+            #f.write(" , ".join(i)+"\n") 
+            f.write(json.dumps(json_obj, ensure_ascii=False) +" \n")
+            mycol.insert_one(json_obj)
             
 
 
